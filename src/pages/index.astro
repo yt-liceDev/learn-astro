@@ -1,0 +1,41 @@
+---
+import { Image } from "astro:assets"
+import MainLayout from "../layout/MainLayout.astro"
+
+const res = await fetch(import.meta.env.PUBLIC_BASE_URL + "?limit=10")
+const { results } = await res.json()
+---
+
+<MainLayout>
+  <section class="grid grid-cols-5 gap-3">
+    {
+      results.map((pokemon) => (
+        <a href={`/pokedex/${pokemon.name}`}>
+          <div class="bg-white rounded-md transition-transform duration-200 ease-in-out hover:-translate-y-2">
+            <figure class="block w-full">
+              <Image
+                src={
+                  import.meta.env.PUBLIC_IMG_URL +
+                  pokemon.url.slice(34).replace("/", "") +
+                  ".png"
+                }
+                alt="pokemon"
+                width={300}
+                height={200}
+              />
+            </figure>
+            <div class="py-4">
+              <p class="text-slate-800 text-center text-lg">{pokemon.name}</p>
+            </div>
+          </div>
+        </a>
+      ))
+    }
+  </section>
+  <div class="text-center mt-8">
+    <a
+      class="inline-block bg-orange-600 font-bold text-slate-100 px-4 py-2 rounded-lg hover:bg-orange-700 hover:text-slate-200"
+      href="/pokedex">Load More Pokemon</a
+    >
+  </div>
+</MainLayout>

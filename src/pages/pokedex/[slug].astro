@@ -1,0 +1,36 @@
+---
+import { Image } from "astro:assets"
+import Description from "../../components/Description.astro"
+import MainLayout from "../../layout/MainLayout.astro"
+
+export const prerender = false
+
+const { slug } = Astro.params
+
+const res = await fetch(`${import.meta.env.PUBLIC_BASE_URL}/${slug}`)
+const pokemon = await res.json()
+---
+
+<MainLayout title={pokemon.name}>
+  <h3 class="text-center text-3xl font-semibold uppercase">{pokemon.name}</h3>
+  <section class="flex mt-4">
+    <figure class="bg-gray-300">
+      <Image
+        src={pokemon.sprites.other["official-artwork"].front_default}
+        alt="img"
+        width={400}
+        height={400}
+      />
+    </figure>
+    <div class="flex-1 px-8 space-y-4">
+      <Description text="height">{pokemon.height}</Description>
+      <Description text="weight">{pokemon.weight} lbs</Description>
+      <Description text="abilities">
+        {pokemon.abilities[0].ability.name}
+      </Description>
+      <Description text="Type">
+        {pokemon.types.map((item) => item.type.name).join(", ")}
+      </Description>
+    </div>
+  </section>
+</MainLayout>
